@@ -1,16 +1,14 @@
 import nodemailer from "nodemailer";
 
 const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 587,
-  secure: false, // use STARTTLS (upgrade connection to TLS after connecting)
+  host: 'smtp.gmail.com',
+  port: 465,         // Đổi từ 587 sang 465 (Cổng bảo mật SSL)
+  secure: true,      // BẮT BUỘC ĐỔI THÀNH TRUE khi dùng port 465
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
   },
-  // THÊM DOẠN NÀY ĐỂ ÉP SỬ DỤNG IPV4
-  connectionTimeout: 10000, // Thêm timeout để tránh treo app nếu lỗi (10s)
-  greetingTimeout: 10000,
+  connectionTimeout: 10000, // (Tùy chọn) Tự động ngắt kết nối sau 10s nếu mạng lag
 });
 
 export const sendAppointmentNotification = async (appointment) => {
