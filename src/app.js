@@ -19,8 +19,8 @@ const app = express();
 // ==========================================
 const allowedOrigins = [
   "http://localhost:3000",
-  "https://kia-car.onrender.com", // Cho phép chính server Render gọi chính nó
-  // process.env.FRONTEND_URL,
+  "http://localhost:5173",
+  process.env.FRONTEND_URL,
 ].filter(Boolean);
 
 const corsOptions = {
