@@ -2,13 +2,16 @@ import nodemailer from "nodemailer";
 
 const transporter = nodemailer.createTransport({
   host: 'smtp.gmail.com',
-  port: 465,         // Đổi từ 587 sang 465 (Cổng bảo mật SSL)
-  secure: true,      // BẮT BUỘC ĐỔI THÀNH TRUE khi dùng port 465
+  port: 25,            // Thử nghiệm với port 25
+  secure: false,       // Phải là false đối với port 25
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
   },
-  connectionTimeout: 10000, // (Tùy chọn) Tự động ngắt kết nối sau 10s nếu mạng lag
+  tls: {
+    rejectUnauthorized: false // Bỏ qua xác thực chứng chỉ nếu bị chặn kết nối nâng cao
+  },
+  connectionTimeout: 10000,
 });
 
 export const sendAppointmentNotification = async (appointment) => {
