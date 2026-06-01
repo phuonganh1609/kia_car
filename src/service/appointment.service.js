@@ -1,7 +1,7 @@
 import {appointmentRepository} from "../respository/appointment.repository.js";
 import { validateAppointment } from "../validators/appointment.validation.js";
 import { sendAppointmentNotification } from "./sendEmail.service.js";
-import { appendAppointment } from "./googleSheet.service.js";
+import { appendAppointment } from "./googlesheet.service.js";
 
 class AppointmentService {
   async create(data) {
