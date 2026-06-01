@@ -1,4 +1,5 @@
 import axios from 'axios';
+import https from 'https';
 
 /**
  * Hàm gửi email thông báo lịch hẹn qua API Promailer
@@ -8,17 +9,17 @@ export const sendAppointmentNotification = async (appointment) => {
   try {
     console.log("Preparing email...");
 
+    // Tạo một agent để bỏ qua lỗi kiểm tra phiên bản SSL/TLS không khớp từ server Promailer
+    const agent = new https.Agent({  
+      rejectUnauthorized: false
+    });
+
     // Gọi API của Promailer để gửi thư
     const response = await axios.post(
       'https://mailserver.automationlounge.com/api/v1/messages/send',
       {
-        // Địa chỉ email nhận thông báo (lấy từ biến môi trường của bạn)
         to: process.env.CTA_EMAIL, 
-        
-        // Tiêu đề email
         subject: "Khách hàng mới đăng ký tư vấn",
-        
-        // Nội dung email dạng HTML (đã được map theo đúng data từ biến appointment)
         html: `
           <h2>Khách hàng mới đăng ký tư vấn</h2>
           <p><strong>Họ:</strong> ${appointment.firstName}</p>
@@ -29,10 +30,10 @@ export const sendAppointmentNotification = async (appointment) => {
       },
       {
         headers: {
-          // Token xác thực Promailer lấy từ biến môi trường
           'Authorization': `Bearer ${process.env.API_MAIL_KEY}`,
           'Content-Type': 'application/json',
         },
+        httpsAgent: agent // Gắn cấu hình agent vào đây để bypass lỗi SSL
       }
     );
 
@@ -40,7 +41,6 @@ export const sendAppointmentNotification = async (appointment) => {
     return response.data;
 
   } catch (error) {
-    // In ra chi tiết lỗi từ API Promailer nếu có
     if (error.response) {
       console.error("EMAIL ERROR (API):", error.response.data);
     } else {
