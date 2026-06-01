@@ -1,26 +1,51 @@
-import { Resend } from 'resend';
+import axios from 'axios';
 
-// Khởi tạo thư viện bằng API KEY từ biến môi trường
-const resend = new Resend(process.env.API_KEY_RESEND);
-
-export async function sendAppointmentNotification(appointment) {
+/**
+ * Hàm gửi email thông báo lịch hẹn qua API Promailer
+ * @param {Object} appointment - Thông tin lịch hẹn của khách hàng
+ */
+export const sendAppointmentNotification = async (appointment) => {
   try {
-    const { data, error } = await resend.emails.send({
-      from: process.env.EMAIL_USER, // Email mặc định test của Resend, sau này có tên miền riêng thì đổi sau
-      to: [process.env.CTA_EMAIL], // Điền email của bạn vào đây để nhận thông báo
-      subject: 'Thông báo lịch hẹn mới từ Kia Car',
-      html: `<p>Bạn có lịch hẹn mới từ khách hàng <strong>${appointment.firstName} ${appointment.lastName}</strong></p>
-             <p>Số điện thoại: ${appointment.phone}</p>
-             <p>Nội dung: ${appointment.content}</p>`,
-    });
+    console.log("Preparing email...");
 
-    if (error) {
-      throw new Error(error.message);
-    }
+    // Gọi API của Promailer để gửi thư
+    const response = await axios.post(
+      'https://mailserver.automationlounge.com/api/v1/messages/send',
+      {
+        // Địa chỉ email nhận thông báo (lấy từ biến môi trường của bạn)
+        to: process.env.CTA_EMAIL, 
+        
+        // Tiêu đề email
+        subject: "Khách hàng mới đăng ký tư vấn",
+        
+        // Nội dung email dạng HTML (đã được map theo đúng data từ biến appointment)
+        html: `
+          <h2>Khách hàng mới đăng ký tư vấn</h2>
+          <p><strong>Họ:</strong> ${appointment.firstName}</p>
+          <p><strong>Tên:</strong> ${appointment.lastName}</p>
+          <p><strong>SĐT:</strong> ${appointment.phone}</p>
+          <p><strong>Nội dung:</strong> ${appointment.content}</p>
+        `
+      },
+      {
+        headers: {
+          // Token xác thực Promailer lấy từ biến môi trường
+          'Authorization': `Bearer ${process.env.API_MAIL_KEY}`,
+          'Content-Type': 'application/json',
+        },
+      }
+    );
 
-    console.log("Email sent successfully via Resend API!", data.id);
+    console.log("Email sent successfully:", response.data);
+    return response.data;
+
   } catch (error) {
-    // Luồng code chính vẫn chạy an toàn nhờ khối catch này
-    console.error("Hệ thống API Mail lỗi:", error.message);
+    // In ra chi tiết lỗi từ API Promailer nếu có
+    if (error.response) {
+      console.error("EMAIL ERROR (API):", error.response.data);
+    } else {
+      console.error("EMAIL ERROR:", error.message);
+    }
+    throw error;
   }
-}
+};
