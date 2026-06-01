@@ -1,7 +1,4 @@
-// Khởi động server (listen port)
-// 1. Ép hệ thống ưu tiên sử dụng IPv4 để sửa lỗi ENETUNREACH trên Render
-import dns from "dns";
-dns.setDefaultResultOrder("ipv4first");
+
 //Khởi động server (listen port)
 import dotenv from "dotenv";
 import http from "http";

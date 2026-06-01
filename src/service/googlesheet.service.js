@@ -1,13 +1,13 @@
 import { google } from "googleapis";
 import path from "path";
 
-const auth = new google.auth.GoogleAuth({
-  keyFile: path.resolve("credentials.json"),
-  scopes: [
-    "https://www.googleapis.com/auth/spreadsheets",
-  ],
-});
+// Chuỗi JSON từ biến môi trường sẽ được parse thành Object
+const credentials = JSON.parse(process.env.GOOGLE_CREDENTIALS);
 
+const auth = new google.auth.GoogleAuth({
+  credentials: credentials, // Truyền trực tiếp object vào đây thay vì dùng keyFile
+  scopes: ['https://www.googleapis.com/auth/spreadsheets'],
+});
 const spreadsheetId = process.env.GOOGLE_SHEET_ID;
 
 export const appendAppointment = async (appointment) => {
