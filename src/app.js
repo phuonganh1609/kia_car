@@ -41,7 +41,7 @@ app.use(
 );
 const allowedOrigins = [
   "http://localhost:3000",
-  process.env.FRONTEND_URL,
+  "https://kia-car.onrender.com",
 ].filter(Boolean);
 const corsOptions = {
   origin: function (origin, callback) {
