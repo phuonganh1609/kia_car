@@ -3,8 +3,46 @@ import cors from "cors";
 import appointmentRoute from "./routes/appointment.route.js";
 import carRoute from "./routes/car.route.js";
 import { notFound, errorHandler } from "./middlewares/error.middleware.js";
+import swaggerUi from "swagger-ui-express";
+import YAML from "yamljs";
+import path from "path";
+import { fileURLToPath } from "url";
+import fs from "fs";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Load Swagger YAML documentation
+const swaggerDocument = YAML.load(
+  path.join(__dirname, "./swagger/swagger.yaml"),
+);
+// Load Custom CSS
+const customCss = fs.readFileSync(
+  path.join(__dirname, "./swagger/swagger-custom.css"),
+  "utf8",
+);
 
 const app = express();
+
+// Swagger UI - served at /swagger
+app.use(
+  "/swagger",
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerDocument, {
+    swaggerOptions: {
+      url: "/api-docs.json",
+      displayOperationId: true,
+      filter: true,
+      showRequestHeaders: true,
+      tryItOutEnabled: true,
+    },
+    customCss: customCss,
+  }),
+);
+const allowedOrigins = [
+  "http://localhost:3000",
+  process.env.FRONTEND_URL,
+].filter(Boolean);
 const corsOptions = {
   origin: function (origin, callback) {
     // Allow requests with no origin (mobile apps, Postman, etc.)
