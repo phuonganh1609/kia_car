@@ -8,6 +8,9 @@ const transporter = nodemailer.createTransport({
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
   },
+  // THÊM DOẠN NÀY ĐỂ ÉP SỬ DỤNG IPV4
+  connectionTimeout: 10000, // Thêm timeout để tránh treo app nếu lỗi (10s)
+  greetingTimeout: 10000,
 });
 
 export const sendAppointmentNotification = async (appointment) => {

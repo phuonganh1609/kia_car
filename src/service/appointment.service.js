@@ -7,6 +7,7 @@ class AppointmentService {
   async create(data) {
   validateAppointment(data);
 
+  // 1. Tạo và lưu dữ liệu vào Database SQL trước
   const appointment = await appointmentRepository.create({
     firstName: data.firstName.toString().trim(),
     lastName: data.lastName.toString().trim(),
@@ -15,12 +16,25 @@ class AppointmentService {
     status: "da_nop",
   });
 
-  console.log("Sending email...");
-  await sendAppointmentNotification(appointment);
-  console.log("Email sent");
+  // 2. Chạy ngầm việc gửi email và ghi sheet, không bắt Swagger phải đợi (Non-blocking)
+  // Việc này giúp Swagger nhận được phản hồi ngay lập tức và hết bị "LOADING"
+  
+  // Tiến trình gửi Email
+  console.log("Preparing email...");
+  sendAppointmentNotification(appointment)
+    .then(() => console.log("Email sent successfully"))
+    .catch((emailError) => {
+      console.error("EMAIL ERROR nhưng luồng code vẫn tiếp tục chạy:", emailError.message);
+    });
 
-  await appendAppointment(appointment);
+  // Tiến trình ghi vào Google Sheet (Vẫn chạy bình thường dù Mail có lỗi)
+  appendAppointment(appointment)
+    .then(() => console.log("Google Sheet updated successfully"))
+    .catch((sheetError) => {
+      console.error("GOOGLE SHEET ERROR:", sheetError.message);
+    });
 
+  // 3. Trả dữ liệu về ngay lập tức cho Swagger / Client
   return appointment;
 }
   async list(filter = {}) {
