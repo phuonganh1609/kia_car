@@ -1,5 +1,8 @@
 import nodemailer from "nodemailer";
-
+// Khởi động server (listen port)
+// 1. Ép hệ thống ưu tiên sử dụng IPv4 để sửa lỗi ENETUNREACH trên Render
+import dns from "dns";
+dns.setDefaultResultOrder("ipv4first");
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
   port: 	'465',
