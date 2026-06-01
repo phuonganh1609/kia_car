@@ -1,7 +1,7 @@
 import {carRepository} from '../respository/car.repository.js';
 
 class CarService {
-    async list(filter = {}, pagination = { page: 1, limit: 10 }) {
+    async list(filter = {},) {
         if (filter.name) {
             const car = await Car.find({
                 name: { $regex: filter.name, $options: 'i' },
@@ -12,7 +12,7 @@ class CarService {
         }
 
         // repository already populates the supply and warehouse
-        return await carRepository.findAll(filter, pagination);
+        return await carRepository.findAll(filter);
     };
 }
 const carService = new CarService();

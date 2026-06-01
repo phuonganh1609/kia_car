@@ -16,12 +16,6 @@ async function startServer() {
     // Create HTTP server and attach Express app
     const server = http.createServer(app);
 
-    // Initialize Socket.io
-    // initializeSocket(server);
-
-    // Initialize Telegram Bot (polling)
-    // await initTelegramBot();
-
     // Start server
     server.listen(PORT, () => {
       console.log(`🚀 Server running on http://localhost:${PORT}`);

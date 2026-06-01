@@ -23,7 +23,7 @@ class AppointmentService {
 
   return appointment;
 }
-  async list(filter = {}, pagination = { page: 1, limit: 10 }) {
+  async list(filter = {}) {
         if (filter.name) {
             const appointments = await appointmentRepository.find({
                 name: { $regex: filter.name, $options: 'i' },
@@ -34,7 +34,7 @@ class AppointmentService {
         }
 
         // repository already populates the supply and warehouse
-        return await appointmentRepository.findAll(filter, pagination);
+        return await appointmentRepository.findAll(filter);
   };
 }
 const appointmentService = new AppointmentService();
