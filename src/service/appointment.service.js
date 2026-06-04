@@ -8,7 +8,8 @@ class AppointmentService {
       firstName: data.firstName.toString().trim(),
       lastName: data.lastName.toString().trim(),
       phone: data.phone.toString(),
-      content: data.content.toString().trim(),
+      address: data.address.toString().trim(),
+      carID: data.carID,
       status: "da_nop",
     });
   };
