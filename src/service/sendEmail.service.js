@@ -23,7 +23,9 @@ export const sendAppointmentNotification = async (appointment) => {
           <p><strong>Họ:</strong> ${appointment.firstName}</p>
           <p><strong>Tên:</strong> ${appointment.lastName}</p>
           <p><strong>SĐT:</strong> ${appointment.phone}</p>
-          <p><strong>Nội dung:</strong> ${appointment.content}</p>
+          <p><strong>Địa chỉ:</strong> ${appointment.address}</p>
+          <p><strong>Xe quan tâm:</strong> ${appointment.carName}</p>
+          <p><strong>Thời gian đăng ký:</strong> ${new Date().toLocaleString("vi-VN")}</p>
         `
       },
       {

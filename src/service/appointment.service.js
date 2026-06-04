@@ -1,28 +1,37 @@
 import {appointmentRepository} from "../respository/appointment.repository.js";
 import { validateAppointment } from "../validators/appointment.validation.js";
+import {carRepository} from "../respository/car.repository.js";
 import { sendAppointmentNotification } from "./sendEmail.service.js";
 import { appendAppointment } from "./googlesheet.service.js";
 
 class AppointmentService {
   async create(data) {
-    validateAppointment(data);
-    return await appointmentRepository.create({
-      firstName: data.firstName.toString().trim(),
-      lastName: data.lastName.toString().trim(),
-      phone: data.phone.toString(),
-      address: data.address.toString().trim(),
-      carID: data.carID,
-      status: "da_nop",
-    });
+  validateAppointment(data);
 
-  // Tiến trình ghi vào Google Sheet (Vẫn chạy bình thường dù Mail có lỗi)
-  appendAppointment(appointment)
+  const appointment = await appointmentRepository.create({
+    firstName: data.firstName.toString().trim(),
+    lastName: data.lastName.toString().trim(),
+    phone: data.phone.toString(),
+    address: data.address.toString().trim(),
+    carID: data.carID,
+    status: "da_nop",
+  });
+
+  const car = await carRepository.findById(appointment.carID);
+  console.log("Sending email...");
+  await sendAppointmentNotification({ ...appointment.toJSON(), carName: car?.name || "" })
+    .then(() => console.log("Email sent successfully"))
+    .catch((err) => console.error("EMAIL ERROR:", err.message));
+
+  appendAppointment({
+    ...appointment.toJSON(),
+    carName: car?.name || "",
+  })
     .then(() => console.log("Google Sheet updated successfully"))
-    .catch((sheetError) => {
-      console.error("GOOGLE SHEET ERROR:", sheetError.message);
-    });
+    .catch((err) =>
+      console.error("GOOGLE SHEET ERROR:", err.message)
+    );
 
-  // 3. Trả dữ liệu về ngay lập tức cho Swagger / Client
   return appointment;
 }
   async list(filter = {}) {

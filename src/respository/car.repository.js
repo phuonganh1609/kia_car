@@ -13,7 +13,11 @@ class CarRepository {
           data: rows,
           total: count,
         };
-      }
+    };
+    async findById(id) {
+        return await Car.findByPk(id);
+    }
+
 }
 const carRepository = new CarRepository();
 export { carRepository };
