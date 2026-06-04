@@ -21,8 +21,16 @@ const Appointment = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    content: {
+    address: {
       type: DataTypes.TEXT,
+    },
+    carID: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: "cars",
+        key: "id",
+      },
     },
     status: {
       type: DataTypes.STRING,

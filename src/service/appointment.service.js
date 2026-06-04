@@ -5,26 +5,14 @@ import { appendAppointment } from "./googlesheet.service.js";
 
 class AppointmentService {
   async create(data) {
-  validateAppointment(data);
-
-  // 1. Tạo và lưu dữ liệu vào Database SQL trước
-  const appointment = await appointmentRepository.create({
-    firstName: data.firstName.toString().trim(),
-    lastName: data.lastName.toString().trim(),
-    phone: data.phone.toString(),
-    content: data.content.toString().trim(),
-    status: "da_nop",
-  });
-
-  // 2. Chạy ngầm việc gửi email và ghi sheet, không bắt Swagger phải đợi (Non-blocking)
-  // Việc này giúp Swagger nhận được phản hồi ngay lập tức và hết bị "LOADING"
-  
-  // Tiến trình gửi Email
-  console.log("Preparing email...");
-  sendAppointmentNotification(appointment)
-    .then(() => console.log("Email sent successfully"))
-    .catch((emailError) => {
-      console.error("EMAIL ERROR nhưng luồng code vẫn tiếp tục chạy:", emailError.message);
+    validateAppointment(data);
+    return await appointmentRepository.create({
+      firstName: data.firstName.toString().trim(),
+      lastName: data.lastName.toString().trim(),
+      phone: data.phone.toString(),
+      address: data.address.toString().trim(),
+      carID: data.carID,
+      status: "da_nop",
     });
 
   // Tiến trình ghi vào Google Sheet (Vẫn chạy bình thường dù Mail có lỗi)

@@ -15,9 +15,12 @@ export const validateAppointment = (data) => {
     throw new Error("Số điện thoại không hợp lệ");
   }
 
-  if (!data.content || !data.content.toString().trim()) {
-    throw new Error("Nội dung tư vấn không được để trống");
+  if (!data.address || !data.address.toString().trim()) {
+    throw new Error("Địa chỉ không được để trống");
   }
 
-  
+  if (!data.carID) {
+    throw new Error("Hay chọn một mẫu xe");
+  }
+
 };
