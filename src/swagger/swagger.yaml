@@ -127,9 +127,12 @@ components:
         phone:
           type: string
           example: "+84912345678"
-        content:
+        CarID:
+          type: integer
+          example: 1
+        address:
           type: string
-          example: "Tôi muốn tư vấn về một chiếc Kia mới."
+          example: "123 Đường ABC, Quận XYZ, TP. HCM"
         status:
           type: string
           example: "da_nop"
