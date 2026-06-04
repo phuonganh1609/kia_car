@@ -2,7 +2,7 @@ import { google } from "googleapis";
 import path from "path";
 
 // Chuỗi JSON từ biến môi trường sẽ được parse thành Object
-// const credentials = JSON.parse(process.env.GOOGLE_CREDENTIALS);
+const credentials = JSON.parse(process.env.GOOGLE_CREDENTIALS);
 const auth = new google.auth.GoogleAuth({
   credentials: credentials, // Truyền trực tiếp object vào đây thay vì dùng keyFile
   scopes: ['https://www.googleapis.com/auth/spreadsheets'],
