@@ -1,3 +1,8 @@
+// Khởi động server (listen port)
+// 1. Ép hệ thống ưu tiên sử dụng IPv4 để sửa lỗi ENETUNREACH trên Render
+import dns from "dns";
+dns.setDefaultResultOrder("ipv4first");
+
 //Khởi động server (listen port)
 import dotenv from "dotenv";
 import http from "http";
@@ -15,12 +20,6 @@ async function startServer() {
 
     // Create HTTP server and attach Express app
     const server = http.createServer(app);
-
-    // Initialize Socket.io
-    // initializeSocket(server);
-
-    // Initialize Telegram Bot (polling)
-    // await initTelegramBot();
 
     // Start server
     server.listen(PORT, () => {

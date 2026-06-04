@@ -1,4 +1,9 @@
 import axios from 'axios';
+import dns from 'dns';
+
+// Ép Node.js ưu tiên dùng IPv4 khi phân giải tên miền để tránh lỗi mạng ENETUNREACH
+dns.setDefaultResultOrder("ipv4first");
+
 /**
  * Hàm gửi email thông báo lịch hẹn bằng Promailer API
  * @param {Object} appointment - Đối tượng chứa thông tin khách hàng

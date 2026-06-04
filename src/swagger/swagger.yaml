@@ -1,0 +1,220 @@
+openapi: 3.0.4
+info:
+  title: Kia Car Appointment API
+  description: |-
+    API documentation for the Kia Car service.
+    This API supports listing available cars and creating appointment requests.
+  contact:
+    email: phuonganhthudzi@gmail.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  version: 1.0.0
+servers:
+  - url: https://kia-car.onrender.com
+    description: Production server
+  - url: http://localhost:3000
+    description: Local development server
+tags:
+  - name: Appointments
+    description: Manage appointment requests
+  - name: Cars
+    description: Retrieve available cars
+paths:
+  /api/appointments:
+    get:
+      tags:
+        - Appointments
+      summary: Get all appointments
+      operationId: getAllAppointments
+     
+      responses:
+        "200":
+          description: List of appointments
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AppointmentsResponse"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+    post:
+      tags:
+        - Appointments
+      summary: Create a new appointment
+      operationId: createAppointment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateAppointmentInput"
+      responses:
+        "201":
+          description: Appointment created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AppointmentResponse"
+        "400":
+          description: Invalid request payload
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /api/cars:
+    get:
+      tags:
+        - Cars
+      summary: Get all cars
+      operationId: getAllCars
+      responses:
+        "200":
+          description: List of cars
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CarsResponse"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+components:
+  schemas:
+    CreateAppointmentInput:
+      type: object
+      required:
+        - firstName
+        - lastName
+        - phone
+        - content
+      properties:
+        firstName:
+          type: string
+          example: "Nguyen"
+        lastName:
+          type: string
+          example: "An"
+        phone:
+          type: string
+          example: "+84912345678"
+        content:
+          type: string
+          example: "Tôi muốn tư vấn về một chiếc Kia mới."
+    Appointment:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        firstName:
+          type: string
+          example: "Nguyen"
+        lastName:
+          type: string
+          example: "An"
+        phone:
+          type: string
+          example: "+84912345678"
+        content:
+          type: string
+          example: "Tôi muốn tư vấn về một chiếc Kia mới."
+        status:
+          type: string
+          example: "da_nop"
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    Car:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Kia Cerato"
+        type:
+          type: string
+          example: "Sedan"
+        color:
+          type: string
+          example: "White"
+        price:
+          type: number
+          format: double
+          example: 650000000
+        description:
+          type: string
+          example: "Sedan gia đình với công nghệ hiện đại"
+        img:
+          type: string
+          format: uri
+          example: "https://example.com/images/kia-cerato.png"
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    AppointmentResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          $ref: "#/components/schemas/Appointment"
+        message:
+          type: string
+          example: ""
+    AppointmentsResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Appointment"
+        message:
+          type: string
+          example: ""
+    CarsResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Car"
+        message:
+          type: string
+          example: ""
+    ApiError:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: "Lỗi máy chủ hoặc dữ liệu không hợp lệ"
+  securitySchemes:
