@@ -23,20 +23,20 @@ const allowedOrigins = [
   process.env.FRONTEND_URL,
 ].filter(Boolean);
 
+
 const corsOptions = {
   origin: function (origin, callback) {
-    // Cho phép requests không có origin (như Postman, Mobile apps, hoặc chính server tải file cấu hình)
+    // Allow requests with no origin (mobile apps, Postman, etc.)
     if (!origin) return callback(null, true);
 
-    // Cho phép nếu nằm trong whitelist hoặc nếu là request từ trang Swagger UI nội bộ
-    if (allowedOrigins.includes(origin) || origin.includes("onrender.com")) {
+    if (allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
       console.log("CORS blocked origin:", origin);
       callback(null, false);
     }
   },
-  credentials: true,
+  credentials: true, // Allow cookies and credentials
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
 };
